@@ -8,6 +8,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery, BufferedInputFile, InlineKeyboardMarkup, InlineKeyboardButton
 from openpyxl.styles import Font
 from sqlalchemy import select, func, delete
+from aiogram.filters import StateFilter
 
 from config import ADMIN_IDS, TIMEZONE, local_now
 from database import (
@@ -56,6 +57,26 @@ async def teacher_fsm_cancel_middleware(handler, event: Message, data: dict):
         await cmd_start(event, state)
         return
     return await handler(event, data)
+
+
+
+@router.callback_query(F.data == "cancel_quiz_creation", StateFilter("*"))
+async def cb_cancel_quiz_creation(callback: CallbackQuery, state: FSMContext):
+    """Joriy FSM holatini bekor qilish va bosh menyuga qaytish"""
+    await state.clear()
+    try:
+        await callback.message.delete()
+    except Exception:
+        pass
+    await callback.message.answer("Jarayon bekor qilindi.", reply_markup=get_teacher_menu(is_demo=False))
+    await callback.answer()
+
+
+@router.message(F.text == "Bekor qilish", StateFilter("*"))
+async def cancel_handler(message: Message, state: FSMContext):
+    """Joriy FSM holatini bekor qilish va bosh menyuga qaytish"""
+    await state.clear()
+    await message.answer("Jarayon bekor qilindi.", reply_markup=get_teacher_menu(is_demo=False))
 
 
 # ==========================================
@@ -583,19 +604,25 @@ async def create_quiz_start(message: Message, state: FSMContext):
                 return
 
     await state.set_state(TeacherStates.waiting_for_quiz_title)
-    await message.answer("📝 **Yangi test yaratish:**\n\nTest nomini kiriting (Masalan: Matematika 5-sinf):", reply_markup=get_cancel_kb())
+    cancel_kb = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="❌ Bekor qilish", callback_data="cancel_quiz_creation")]
+    ])
+    await message.answer("📝 **Yangi test yaratish:**\n\nTest nomini kiriting (Masalan: Matematika 5-sinf):", reply_markup=cancel_kb)
 
 
 @router.message(TeacherStates.waiting_for_quiz_title)
 async def process_quiz_title(message: Message, state: FSMContext):
     title = message.text.strip()
+    cancel_kb = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="❌ Bekor qilish", callback_data="cancel_quiz_creation")]
+    ])
     if not title or len(title) < 3:
-        await message.answer("Iltimos, yaroqliroq test nomini kiriting:", reply_markup=get_cancel_kb())
+        await message.answer("Iltimos, yaroqliroq test nomini kiriting:", reply_markup=cancel_kb)
         return
 
     await state.update_data(quiz_title=title)
     await state.set_state(TeacherStates.waiting_for_quiz_description)
-    await message.answer("📝 Test tavsifini yozing (Masalan: 1-smena uchun nazorat ishi):", reply_markup=get_cancel_kb())
+    await message.answer("📝 Test tavsifini yozing (Masalan: 1-smena uchun nazorat ishi):", reply_markup=cancel_kb)
 
 
 @router.message(TeacherStates.waiting_for_quiz_description)
@@ -605,9 +632,12 @@ async def process_quiz_description(message: Message, state: FSMContext):
 
     # Word yuklash holatiga o'tish (Imtihon davomiyligi uni boshlashdan oldin so'raladi)
     await state.set_state(TeacherStates.waiting_for_docx_file)
+    cancel_kb = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="❌ Bekor qilish", callback_data="cancel_quiz_creation")]
+    ])
     await message.answer(
         "📝 **Test savollarini Word (.docx) faylda yuboring. Shablonlarini \"Qo'llanma\" bo'limidan oling.**",
-        reply_markup=get_cancel_kb(),
+        reply_markup=cancel_kb,
         parse_mode="Markdown",
     )
 
@@ -675,9 +705,12 @@ async def cb_docx_finished(callback: CallbackQuery, state: FSMContext):
 
     await state.set_state(TeacherStates.waiting_for_excel_file)
     await callback.message.delete()
+    cancel_kb = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="❌ Bekor qilish", callback_data="cancel_quiz_creation")]
+    ])
     await callback.message.answer(
         "📊 **O'quvchilar ro'yxatini Excel (.xlsx) faylda yuboring. Shablonlarini \"Qo'llanma\" bo'limidan oling.**",
-        reply_markup=get_cancel_kb(),
+        reply_markup=cancel_kb,
         parse_mode="Markdown",
     )
     await callback.answer()
