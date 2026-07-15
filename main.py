@@ -193,10 +193,10 @@ async def lifespan(app: FastAPI):
 
     yield
 
-    # Shutdown hodisasi (Webhook o'chirish)
-    if config.USE_WEBHOOK:
-        logger.info("Webhook o'chirilmoqda...")
-        await bot.delete_webhook(drop_pending_updates=True)
+    # Shutdown hodisasi (Webhook o'chirish bekor qilindi, rolling redeploy muammosi tufayli)
+    # if config.USE_WEBHOOK:
+    #     logger.info("Webhook o'chirilmoqda...")
+    #     await bot.delete_webhook(drop_pending_updates=True)
     
     await bot.session.close()
     logger.info("Bot to'xtatildi.")
