@@ -311,6 +311,18 @@ async def cb_download_guide_pdf(callback: CallbackQuery):
         "Hamma kirganidan so'ng 'Start' bosing. Imtihon davomida 'Jonli Nazorat' bo'limidan kim nechanchi savolda turganini onlayn kuzatib boring."
     )
 
+    doc.add_heading("4. Bepul DEMO va taklif tizimi", 1)
+    doc.add_paragraph(
+        "Barcha yangi o'qituvchilarga 1 ta bepul test yaratish limiti beriladi. Limit tugagach, botga yangi 5 ta hamkasb ustozni taklif qilib, "
+        "yana 1 ta bepul test limiti olishingiz mumkin! Buning uchun 'Mening obunam' yoki 'Tariflar va Imkoniyatlar' bo'limidan taklif havolangizni oling."
+    )
+
+    doc.add_heading("5. MONO yoki PREMIUM limit olish", 1)
+    doc.add_paragraph(
+        "Bot imkoniyatlaridan qulay foydalanish uchun 'Tariflar va Imkoniyatlar' bo'limidan limitlar sotib oling va mazza qilib ishlating. "
+        "Bu eng qulay usul (narxlar juda arzon)."
+    )
+
     stream = io.BytesIO()
     doc.save(stream)
     file_bytes = stream.getvalue()
