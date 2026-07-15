@@ -16,12 +16,12 @@ def get_welcome_kb() -> InlineKeyboardMarkup:
     buttons = [
         [
             InlineKeyboardButton(
-                text="Talaba sifatida kirish", callback_data="auth_student"
+                text="O'qituvchi sifatida kirish", callback_data="auth_teacher"
             )
         ],
         [
             InlineKeyboardButton(
-                text="O'qituvchi sifatida kirish", callback_data="auth_teacher"
+                text="Talaba sifatida kirish", callback_data="auth_student"
             )
         ],
         [InlineKeyboardButton(text="Bot haqida", callback_data="about_bot")],

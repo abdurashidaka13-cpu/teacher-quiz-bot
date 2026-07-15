@@ -228,8 +228,8 @@ async def cmd_start(message: Message, state: FSMContext):
 
     await message.answer(
         "Assalomu alaykum! Tizimga xush kelibsiz.\n\n"
-        "Ushbu tizim o'qituvchilar uchun testlar o'tkazish, talabalar uchun esa imtihonlarni xavfsiz va adolatli yechish imkonini beradi.\n\n"
-        "Davom ettirish uchun quyidagilardan birini tanlang:",
+        "Ushbu tizim o'qituvchilar uchun testlar o'tkazish (oraliq, yakuniy nazorat) uchun juda qulay. Natijalar excel formatda tayyorlab beriladi.\n\n"
+        "Davom etish uchun quyidagilardan birini tanlang:",
         reply_markup=get_welcome_kb(),
         parse_mode="Markdown",
     )
