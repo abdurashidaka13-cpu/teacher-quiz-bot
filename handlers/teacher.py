@@ -198,8 +198,10 @@ async def show_guide(message: Message):
         "Excel shablonini yuklab oling, o'quvchilaringiz ism-familiyalarini nusxalab yozing va botga yuboring. Bot ularga login-parol yaratib qaytaradi.\n\n"
         "<b>3. Test jarayonini o'tkazish:</b>\n"
         "Testni sozlab bo'lgach, kodni o'quvchilarga tarqating va darsda hamma tayyor bo'lganda Start 🚀 tugmasini bosing.\n\n"
-        "<b>4. Bepul Demo va Taklif tizimi:</b>\n"
-        "Barcha yangi o'qituvchilarga 1 ta bepul test yaratish limiti beriladi. Limit tugagach, botga yangi 5 ta hamkasb ustozni taklif qilib, <b>yana 1 ta bepul test limiti</b> olishingiz mumkin! Buning uchun 'Mening obunam' bo'limidan taklif havolangizni oling.\n\n"
+        "<b>4. Bepul DEMO va taklif tizimi:</b>\n"
+        "Barcha yangi o'qituvchilarga 1 ta bepul test yaratish limiti beriladi. Limit tugagach, botga yangi 5 ta hamkasb ustozni taklif qilib, yana 1 ta bepul test limiti olishingiz mumkin! Buning uchun 'Mening obunam' yoki 'Tariflar va Imkoniyatlar' bo'limidan taklif havolangizni oling.\n\n"
+        "<b>5. MONO yoki PREMIUM limit olish:</b>\n"
+        "Bot imkoniyatlaridan qulay foydalanish uchun 'Tariflar va Imkoniyatlar' bo'limidan limitlar sotib oling va mazza qilib ishlating. Bu eng qulay usul (narxlar juda arzon).\n\n"
         "Batafsil rasmli qo'llanma va shablonlarni yuklab olish:"
     )
     await message.answer(guide_text, reply_markup=get_guide_download_kb(), parse_mode="HTML")
