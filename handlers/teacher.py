@@ -612,10 +612,13 @@ async def create_quiz_start(message: Message, state: FSMContext):
 
 @router.message(TeacherStates.waiting_for_quiz_title)
 async def process_quiz_title(message: Message, state: FSMContext):
-    title = message.text.strip()
     cancel_kb = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="❌ Bekor qilish", callback_data="cancel_quiz_creation")]
     ])
+    if not message.text:
+        await message.answer("Iltimos, test nomini matn ko'rinishida kiriting:", reply_markup=cancel_kb)
+        return
+    title = message.text.strip()
     if not title or len(title) < 3:
         await message.answer("Iltimos, yaroqliroq test nomini kiriting:", reply_markup=cancel_kb)
         return
@@ -627,6 +630,12 @@ async def process_quiz_title(message: Message, state: FSMContext):
 
 @router.message(TeacherStates.waiting_for_quiz_description)
 async def process_quiz_description(message: Message, state: FSMContext):
+    cancel_kb = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="❌ Bekor qilish", callback_data="cancel_quiz_creation")]
+    ])
+    if not message.text:
+        await message.answer("Iltimos, test tavsifini matn ko'rinishida yozing:", reply_markup=cancel_kb)
+        return
     desc = message.text.strip()
     await state.update_data(quiz_description=desc, uploaded_variants=[])
 
@@ -690,6 +699,18 @@ async def process_quiz_docx(message: Message, state: FSMContext, bot: Bot):
             ]
         ),
         parse_mode="Markdown",
+    )
+
+@router.message(TeacherStates.waiting_for_docx_file)
+async def process_quiz_docx_invalid(message: Message):
+    cancel_kb = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="❌ Bekor qilish", callback_data="cancel_quiz_creation")]
+    ])
+    await message.answer(
+        "⚠️ **Yaroqsiz fayl yuborildi.**\n\n"
+        "Iltimos, test savollari Word (.docx) faylini yuboring:",
+        reply_markup=cancel_kb,
+        parse_mode="Markdown"
     )
 
 
@@ -907,6 +928,19 @@ async def process_quiz_excel(message: Message, state: FSMContext, bot: Bot):
     await message.answer_document(
         BufferedInputFile(excel_bytes, filename=f"logins_{code}.xlsx"),
         caption=f"🔑 Test kodi: {code} uchun student login-parollari.",
+    )
+
+
+@router.message(TeacherStates.waiting_for_excel_file)
+async def process_quiz_excel_invalid(message: Message):
+    cancel_kb = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="❌ Bekor qilish", callback_data="cancel_quiz_creation")]
+    ])
+    await message.answer(
+        "⚠️ **Yaroqsiz fayl yuborildi.**\n\n"
+        "Iltimos, o'quvchilar ro'yxati yozilgan Excel (.xlsx) faylini yuboring:",
+        reply_markup=cancel_kb,
+        parse_mode="Markdown"
     )
 
 
