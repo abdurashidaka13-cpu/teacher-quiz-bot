@@ -708,7 +708,7 @@ async def process_quiz_docx_invalid(message: Message):
     ])
     await message.answer(
         "⚠️ **Yaroqsiz fayl yuborildi.**\n\n"
-        "Iltimos, test savollari Word (.docx) faylini yuboring:",
+        "Iltimos, test savollari Word (.docx) faylini yuboring. Shablonlarini \"Qo'llanma\" bo'limidan oling.",
         reply_markup=cancel_kb,
         parse_mode="Markdown"
     )
@@ -938,7 +938,7 @@ async def process_quiz_excel_invalid(message: Message):
     ])
     await message.answer(
         "⚠️ **Yaroqsiz fayl yuborildi.**\n\n"
-        "Iltimos, o'quvchilar ro'yxati yozilgan Excel (.xlsx) faylini yuboring:",
+        "Iltimos, o'quvchilar ro'yxatini Excel (.xlsx)  faylda yuboring. Shablonlarini \"Qo'llanma\" bo'limidan oling.",
         reply_markup=cancel_kb,
         parse_mode="Markdown"
     )
