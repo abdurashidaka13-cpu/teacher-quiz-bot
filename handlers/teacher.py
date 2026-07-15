@@ -1471,6 +1471,7 @@ async def show_tariffs_guide(message: Message):
         "Hurmatli ustoz, botimiz orqali test olish jarayonini avtomatlashtirish endi juda qulay!\n\n"
         "🎁 <b>DEMO</b> (bepul, birinchi marta avtomatik beriladi, so'ng botga odam qo'shish orqali)\n"
         "• <b>Testlar soni:</b> faqat 1 marta\n"
+        "• <b>Bepul limit olish imkoniyati:</b> (quyidagi \"Taklif havolasini olish\" knopkasi orqali havola olinadi va 5 nafar yangi hamkasblarga yuboriladi)\n"
         "• <b>O'quvchilar sig'imi:</b> 30 nafargacha\n\n"
         
         "🎟 <b>MONO</b> (bir marta test o'tkazish uchun)\n"
