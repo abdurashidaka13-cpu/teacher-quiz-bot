@@ -51,7 +51,7 @@ class SystemSettings(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     onetime_price: Mapped[int] = mapped_column(Integer, default=10000)  # 1 marta test narxi (so'm)
     monthly_price: Mapped[int] = mapped_column(Integer, default=50000)  # 1 oylik Premium narxi (so'm)
-    demo_max_students: Mapped[int] = mapped_column(Integer, default=50)  # Demo student limiti
+    demo_max_students: Mapped[int] = mapped_column(Integer, default=30)  # Demo student limiti
     onetime_max_students: Mapped[int] = mapped_column(Integer, default=50)  # 1 martalik student limiti
     monthly_max_students: Mapped[int] = mapped_column(Integer, default=50)  # Premium student limiti
     maintenance_mode: Mapped[bool] = mapped_column(Boolean, default=False)  # Texnik ishlar rejimi

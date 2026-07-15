@@ -1473,17 +1473,16 @@ async def show_tariffs_guide(message: Message):
     text = (
         "💎 <b>TARIFLAR VA IMKONIYATLAR</b>\n\n"
         "Hurmatli ustoz, botimiz orqali test olish jarayonini avtomatlashtirish endi juda qulay!\n\n"
-        "🎁 <b>BEPUL DEMO REJIMI</b> (Barchaga avtomatik beriladi)\n"
+        "🎁 <b>DEMO</b> (bepul, birinchi marta avtomatik beriladi, so'ng botga odam qo'shish orqali)\n"
         "• <b>Testlar soni:</b> faqat 1 marta\n"
-        "• <b>O'quvchilar sig'imi:</b> 50 nafargacha\n"
-        "• <b>Qo'shimcha bepul limit:</b> 5 ta hamkasb taklif qilib, yana bepul limit olish mumkin!\n\n"
+        "• <b>O'quvchilar sig'imi:</b> 30 nafargacha\n\n"
         
-        "🎟 <b>1 MARTALIK LIMIT</b>\n"
+        "🎟 <b>MONO</b> (bir marta test o'tkazish uchun)\n"
         "• <b>Maqsad:</b> doimiy Premium olmasdan, vaqti-vaqti bilan bittadan test o'tkazmoqchi bo'lganlar uchun.\n"
         "• <b>Testlar soni:</b> har bir limit 1 ta test jarayoni\n"
         "• <b>O'quvchilar sig'imi:</b> 50 nafargacha\n\n"
         
-        "🌟 <b>PREMIUM OBUNA (1 OYLIK)</b>\n"
+        "🌟 <b>PREMIUM</b> (bir oylik obuna)\n"
         "• <b>Testlar soni:</b> 1 oy davomida CHEKSIZ ♾️\n"
         "• <b>O'quvchilar sig'imi:</b> 50 nafargacha (bitta test uchun)\n"
         "• <b>Foydasi:</b> oy davomida xohlagancha test olish imkoniyati!\n\n"
