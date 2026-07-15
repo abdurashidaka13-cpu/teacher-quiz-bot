@@ -486,10 +486,20 @@ async def show_subscription(message: Message):
             status_text += f"🎫 **Bir martalik limitlar:** Mavjud emas ❌\n\n"
 
         if not has_premium and onetime_credits <= 0:
+            bot_info = await message.bot.get_me()
+            ref_link = f"https://t.me/{bot_info.username}?start=ref_{user_id}"
+            user_stmt = select(User).where(User.id == user_id)
+            db_u = (await session.execute(user_stmt)).scalar_one_or_none()
+            ref_count = db_u.referral_count if db_u else 0
+
             status_text += (
                 f"🎁 **Bepul Demo Paket:** FAOL ✅\n"
                 f"👥 Ruxsat etilgan studentlar soni: *{settings.demo_max_students} ta* (har bir testda)\n"
-                f"📁 Test yaratish limiti: *Umrida faqat 1 ta yaratish mumkin*\n"
+                f"📁 Test yaratish limiti: *1 ta test yaratish imkoniyati*\n"
+                f"🤝 **Bepul limit olish:**\n"
+                f"Quyidagi taklif havolasini 5 ta hamkasb ustozga yuboring. Ular botimizga kirib `/start` tugmasini bosishi bilanoq sizga **1 ta bepul test yaratish limiti** taqdim etiladi.\n"
+                f"🔗 Taklif havolangiz: {ref_link}\n"
+                f"📊 Taklif ko'rsatkichi: *{ref_count}/5*\n"
                 f"_Ko'proq test o'tkazish uchun Premium yoki Limit xarid qiling!_\n\n"
             )
 
