@@ -48,6 +48,7 @@ async def teacher_fsm_cancel_middleware(handler, event: Message, data: dict):
         "Qo'llanma",
         "Adminga murojaat",
         "Talaba rejimiga o'tish",
+        "Bekor qilish",
         "/start"
     ]:
         await state.clear()
@@ -582,19 +583,19 @@ async def create_quiz_start(message: Message, state: FSMContext):
                 return
 
     await state.set_state(TeacherStates.waiting_for_quiz_title)
-    await message.answer("📝 **Yangi test yaratish:**\n\nTest nomini kiriting (Masalan: Matematika 5-sinf):")
+    await message.answer("📝 **Yangi test yaratish:**\n\nTest nomini kiriting (Masalan: Matematika 5-sinf):", reply_markup=get_cancel_kb())
 
 
 @router.message(TeacherStates.waiting_for_quiz_title)
 async def process_quiz_title(message: Message, state: FSMContext):
     title = message.text.strip()
     if not title or len(title) < 3:
-        await message.answer("Iltimos, yaroqliroq test nomini kiriting:")
+        await message.answer("Iltimos, yaroqliroq test nomini kiriting:", reply_markup=get_cancel_kb())
         return
 
     await state.update_data(quiz_title=title)
     await state.set_state(TeacherStates.waiting_for_quiz_description)
-    await message.answer("📝 Test tavsifini yozing (Masalan: 1-smena uchun nazorat ishi):")
+    await message.answer("📝 Test tavsifini yozing (Masalan: 1-smena uchun nazorat ishi):", reply_markup=get_cancel_kb())
 
 
 @router.message(TeacherStates.waiting_for_quiz_description)
@@ -607,6 +608,7 @@ async def process_quiz_description(message: Message, state: FSMContext):
     await message.answer(
         "📝 **1-variant uchun Word (.docx) test savollarini yuklang:**\n\n"
         "_Fayl sarlavha ostidagi jadval 6 ta ustundan iborat ekanligiga ishonch hosil qiling._",
+        reply_markup=get_cancel_kb(),
         parse_mode="Markdown",
     )
 
@@ -673,9 +675,11 @@ async def cb_docx_finished(callback: CallbackQuery, state: FSMContext):
         return
 
     await state.set_state(TeacherStates.waiting_for_excel_file)
-    await callback.message.edit_text(
+    await callback.message.delete()
+    await callback.message.answer(
         "📊 **Endi studentlar ism-familiyalari ro'yxatini (Excel - .xlsx) yuklang:**\n\n"
         "_Faylning birinchi ustun sarlavhasi 'Ism Familiya' bo'lishi shart._",
+        reply_markup=get_cancel_kb(),
         parse_mode="Markdown",
     )
     await callback.answer()
