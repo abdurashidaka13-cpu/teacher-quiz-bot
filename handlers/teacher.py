@@ -479,26 +479,35 @@ async def show_subscription(message: Message):
         bot_info = await message.bot.get_me()
         ref_link = f"https://t.me/{bot_info.username}?start=ref_{user_id}"
 
-        # Matnni shakllantirish (Faqat faol status va limitlar)
-        status_text = "💳 **SIZNING FAOLLIK TARIFINGIZ:**\n\n"
+        # Matnni shakllantirish
+        status_text = "🎟 **SIZNING FAOLLIK TARIFLARINGIZ:**\n\n"
 
+        # 1. Premium Obuna
         if has_premium:
             status_text += (
-                f"🌟 **PREMIUM** (Faol) ✅\n"
+                f"🌟 **Premium Obuna (1 oylik):** FAOL ✅\n"
                 f"• **Test yaratish limiti:** Cheksiz ♾️\n"
                 f"• **Talabalar sig'imi:** {settings.monthly_max_students} nafargacha (har bir testda)\n"
-                f"• **Tugash muddati:** {premium_sub.expires_at.strftime('%Y-%m-%d %H:%M')}\n"
-            )
-        elif onetime_credits > 0:
-            status_text += (
-                f"🎟 **MONO** (Faol) ✅\n"
-                f"• **Qolgan test limitlaringiz:** {onetime_credits} ta test uchun\n"
-                f"• **Talabalar sig'imi:** {settings.onetime_max_students} nafargacha (har bir testda)\n"
+                f"• **Tugash muddati:** {premium_sub.expires_at.strftime('%Y-%m-%d %H:%M')}\n\n"
             )
         else:
+            status_text += f"🌟 **Premium Obuna:** Faol emas ❌\n\n"
+
+        # 2. Bir martalik limitlar (Mono)
+        if onetime_credits > 0:
+            status_text += (
+                f"🎫 **Bir martalik limitlar (MONO):** FAOL ✅\n"
+                f"• **Qolgan limitlar soni:** {onetime_credits} ta test uchun\n"
+                f"• **Talabalar sig'imi:** {settings.onetime_max_students} nafargacha (har bir testda)\n\n"
+            )
+        else:
+            status_text += f"🎫 **Bir martalik limitlar:** Mavjud emas ❌\n\n"
+
+        # 3. Bepul Demo Paket
+        if not has_premium and onetime_credits <= 0:
             limit_status = "1 / 1 (Limit tugagan ❌)" if quiz_count >= 1 else f"{quiz_count} / 1"
             status_text += (
-                f"🎁 **DEMO** (Faol) ✅\n"
+                f"🎁 **Bepul Demo Paket:** FAOL ✅\n"
                 f"• **Test yaratish limiti:** 1 ta test\n"
                 f"• **Yaratilgan testlaringiz:** {limit_status}\n"
                 f"• **Talabalar sig'imi:** {settings.demo_max_students} nafargacha (har bir testda)\n\n"
