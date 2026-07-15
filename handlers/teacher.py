@@ -198,6 +198,8 @@ async def show_guide(message: Message):
         "Excel shablonini yuklab oling, o'quvchilaringiz ism-familiyalarini nusxalab yozing va botga yuboring. Bot ularga login-parol yaratib qaytaradi.\n\n"
         "<b>3. Test jarayonini o'tkazish:</b>\n"
         "Testni sozlab bo'lgach, kodni o'quvchilarga tarqating va darsda hamma tayyor bo'lganda Start 🚀 tugmasini bosing.\n\n"
+        "<b>4. Bepul Demo va Taklif tizimi:</b>\n"
+        "Barcha yangi o'qituvchilarga 1 ta bepul test yaratish limiti beriladi. Limit tugagach, botga yangi 5 ta hamkasb ustozni taklif qilib, <b>yana 1 ta bepul test limiti</b> olishingiz mumkin! Buning uchun 'Mening obunam' bo'limidan taklif havolangizni oling.\n\n"
         "Batafsil rasmli qo'llanma va shablonlarni yuklab olish:"
     )
     await message.answer(guide_text, reply_markup=get_guide_download_kb(), parse_mode="HTML")
@@ -1473,7 +1475,8 @@ async def show_tariffs_guide(message: Message):
         "Hurmatli ustoz, botimiz orqali test olish jarayonini avtomatlashtirish endi juda qulay!\n\n"
         "🎁 <b>BEPUL DEMO REJIMI</b> (Barchaga avtomatik beriladi)\n"
         "• <b>Testlar soni:</b> faqat 1 marta\n"
-        "• <b>O'quvchilar sig'imi:</b> 50 nafargacha\n\n"
+        "• <b>O'quvchilar sig'imi:</b> 50 nafargacha\n"
+        "• <b>Qo'shimcha bepul limit:</b> 5 ta hamkasb taklif qilib, yana bepul limit olish mumkin!\n\n"
         
         "🎟 <b>1 MARTALIK LIMIT</b>\n"
         "• <b>Maqsad:</b> doimiy Premium olmasdan, vaqti-vaqti bilan bittadan test o'tkazmoqchi bo'lganlar uchun.\n"
@@ -1487,4 +1490,30 @@ async def show_tariffs_guide(message: Message):
         
         "<i>💡 Tariflar narxlari bilan tanishish hamda o'zingizga mos tarifni xarid qilish uchun darhol <b>\"Adminga murojaat\"</b> tugmasini bosing!</i>"
     )
-    await message.answer(text, parse_mode="HTML")
+    
+    kb = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="🤝 Taklif havolasini olish (Bepul limit)", callback_data="get_ref_link")]
+    ])
+    await message.answer(text, parse_mode="HTML", reply_markup=kb)
+
+
+@router.callback_query(F.data == "get_ref_link")
+async def cb_get_ref_link(callback: CallbackQuery):
+    user_id = callback.from_user.id
+    bot_info = await callback.bot.get_me()
+    ref_link = f"https://t.me/{bot_info.username}?start=ref_{user_id}"
+    
+    async with async_session() as session:
+        user_stmt = select(User).where(User.id == user_id)
+        db_u = (await session.execute(user_stmt)).scalar_one_or_none()
+        ref_count = db_u.referral_count if db_u else 0
+
+    text = (
+        f"🤝 **Taklif tizimi orqali bepul limit oling!**\n\n"
+        f"Quyidagi taklif havolasini hamkasb ustozlarga yuboring. Ular botga kirib `/start` bosishlari bilanoq sizning hisobingizga 1 ta taklif qo'shiladi:\n\n"
+        f"🔗 Taklif havolangiz: `{ref_link}`\n\n"
+        f"📊 Hozirgi ko'rsatkich: *{ref_count}/5* hamkasb taklif qilingan.\n"
+        f"🎁 5 taga yetganda **1 ta bepul test yaratish limiti** (onetime) olasiz!"
+    )
+    await callback.message.answer(text, parse_mode="Markdown")
+    await callback.answer()
