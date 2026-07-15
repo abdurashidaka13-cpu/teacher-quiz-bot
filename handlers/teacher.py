@@ -498,7 +498,7 @@ async def show_subscription(message: Message):
                 f"📁 Test yaratish limiti: *1 ta test yaratish imkoniyati*\n"
                 f"🤝 **Bepul limit olish:**\n"
                 f"Quyidagi taklif havolasini 5 ta hamkasb ustozga yuboring. Ular botimizga kirib `/start` tugmasini bosishi bilanoq sizga **1 ta bepul test yaratish limiti** taqdim etiladi.\n"
-                f"🔗 Taklif havolangiz: {ref_link}\n"
+                f"🔗 Taklif havolangiz: `{ref_link}`\n"
                 f"📊 Taklif ko'rsatkichi: *{ref_count}/5*\n"
                 f"_Ko'proq test o'tkazish uchun Premium yoki Limit xarid qiling!_\n\n"
             )
