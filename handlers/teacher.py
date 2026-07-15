@@ -491,7 +491,7 @@ async def show_subscription(message: Message):
                 f"• **Tugash muddati:** {premium_sub.expires_at.strftime('%Y-%m-%d %H:%M')}\n\n"
             )
         else:
-            status_text += f"🌟 **Premium Obuna:** Faol emas ❌\n\n"
+            status_text += f"🌟 Premium Obuna: Faol emas ❌\n\n"
 
         # 2. Bir martalik limitlar (Mono)
         if onetime_credits > 0:
@@ -501,20 +501,20 @@ async def show_subscription(message: Message):
                 f"• **Talabalar sig'imi:** {settings.onetime_max_students} nafargacha (har bir testda)\n\n"
             )
         else:
-            status_text += f"🎫 **Bir martalik limitlar:** Mavjud emas ❌\n\n"
+            status_text += f"🎫 Bir martalik limitlar: Mavjud emas ❌\n\n"
 
         # 3. Bepul Demo Paket
         if not has_premium and onetime_credits <= 0:
             limit_status = "1 / 1 (Limit tugagan ❌)" if quiz_count >= 1 else f"{quiz_count} / 1"
             status_text += (
-                f"🎁 **Bepul Demo Paket:** FAOL ✅\n"
-                f"• **Test yaratish limiti:** 1 ta test\n"
-                f"• **Yaratilgan testlaringiz:** {limit_status}\n"
-                f"• **Talabalar sig'imi:** {settings.demo_max_students} nafargacha (har bir testda)\n\n"
+                f"🎁 **Bepul Demo Paket: FAOL ✅**\n"
+                f"• Test yaratish limiti: 1 ta test\n"
+                f"• Yaratilgan testlaringiz: {limit_status}\n"
+                f"• Talabalar sig'imi: {settings.demo_max_students} nafargacha (har bir testda)\n\n"
                 f"🤝 **Bepul limit olish:**\n"
-                f"Quyidagi taklif havolasini 5 ta hamkasb ustozga yuboring. Ular botga kirib `/start` tugmasini bosishi bilanoq hisobingizga **1 ta bepul test limiti (MONO)** qo'shiladi:\n"
+                f"Quyidagi taklif havolasini 5 ta hamkasb ustozga yuboring. Ular botga kirib `/start` tugmasini bosishi bilanoq hisobingizga **1 ta bepul test limiti (DEMO)** qo'shiladi:\n"
                 f"🔗 Taklif havolangiz: `{ref_link}`\n"
-                f"📊 Taklif ko'rsatkichi: *{ref_count}/5*"
+                f"📊 Taklif ko'rsatkichi: {ref_count}/5"
             )
 
     await message.answer(status_text, reply_markup=get_teacher_menu(is_demo=False), parse_mode="Markdown")
