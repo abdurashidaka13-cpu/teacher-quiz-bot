@@ -455,7 +455,7 @@ async def show_subscription(message: Message):
         sub_res = await session.execute(sub_stmt)
         subs = sub_res.scalars().all()
 
-        # Tizim narxlari va limitlarini olish
+        # Tizim limitlarini olish
         settings_res = await session.execute(select(SystemSettings))
         settings = settings_res.scalar()
 
@@ -465,52 +465,48 @@ async def show_subscription(message: Message):
 
         onetime_credits = sum(s.credits for s in subs if s.type == "onetime")
 
-        # Matnni shakllantirish
-        status_text = "🎟 **SIZNING FAOLLIK TARIFLARINGIZ:**\n\n"
+        # Hozirgi testlar sonini olish
+        quiz_count_stmt = select(func.count(Quiz.id)).where(Quiz.teacher_id == user_id)
+        quiz_count_res = await session.execute(quiz_count_stmt)
+        quiz_count = quiz_count_res.scalar()
+
+        # Taklif qilingan foydalanuvchilar sonini olish
+        user_stmt = select(User).where(User.id == user_id)
+        db_u = (await session.execute(user_stmt)).scalar_one_or_none()
+        ref_count = db_u.referral_count if db_u else 0
+
+        # Bot ma'lumotlari
+        bot_info = await message.bot.get_me()
+        ref_link = f"https://t.me/{bot_info.username}?start=ref_{user_id}"
+
+        # Matnni shakllantirish (Faqat faol status va limitlar)
+        status_text = "💳 **SIZNING FAOLLIK TARIFINGIZ:**\n\n"
 
         if has_premium:
             status_text += (
-                f"🌟 **Premium Obuna (1 oylik):** FAOL ✅\n"
-                f"📅 Tugash muddati: {premium_sub.expires_at.strftime('%Y-%m-%d %H:%M')}\n"
-                f"👥 Ruxsat etilgan studentlar soni: *{settings.monthly_max_students} ta* (har bir testda)\n"
-                f"📁 Test yaratish limiti: *Cheksiz*\n\n"
+                f"🌟 **PREMIUM** (Faol) ✅\n"
+                f"• **Test yaratish limiti:** Cheksiz ♾️\n"
+                f"• **Talabalar sig'imi:** {settings.monthly_max_students} nafargacha (har bir testda)\n"
+                f"• **Tugash muddati:** {premium_sub.expires_at.strftime('%Y-%m-%d %H:%M')}\n"
+            )
+        elif onetime_credits > 0:
+            status_text += (
+                f"🎟 **MONO** (Faol) ✅\n"
+                f"• **Qolgan test limitlaringiz:** {onetime_credits} ta test uchun\n"
+                f"• **Talabalar sig'imi:** {settings.onetime_max_students} nafargacha (har bir testda)\n"
             )
         else:
-            status_text += f"🌟 **Premium Obuna:** Faol emas ❌\n\n"
-
-        if onetime_credits > 0:
+            limit_status = "1 / 1 (Limit tugagan ❌)" if quiz_count >= 1 else f"{quiz_count} / 1"
             status_text += (
-                f"🎫 **Bir martalik limitlar:** FAOL ✅\n"
-                f"💳 Qolgan limitlar soni: *{onetime_credits} ta test uchun*\n"
-                f"👥 Ruxsat etilgan studentlar soni: *{settings.onetime_max_students} ta* (har bir testda)\n\n"
-            )
-        else:
-            status_text += f"🎫 **Bir martalik limitlar:** Mavjud emas ❌\n\n"
-
-        if not has_premium and onetime_credits <= 0:
-            bot_info = await message.bot.get_me()
-            ref_link = f"https://t.me/{bot_info.username}?start=ref_{user_id}"
-            user_stmt = select(User).where(User.id == user_id)
-            db_u = (await session.execute(user_stmt)).scalar_one_or_none()
-            ref_count = db_u.referral_count if db_u else 0
-
-            status_text += (
-                f"🎁 **Bepul Demo Paket:** FAOL ✅\n"
-                f"👥 Ruxsat etilgan studentlar soni: *{settings.demo_max_students} ta* (har bir testda)\n"
-                f"📁 Test yaratish limiti: *1 ta test yaratish imkoniyati*\n"
+                f"🎁 **DEMO** (Faol) ✅\n"
+                f"• **Test yaratish limiti:** 1 ta test\n"
+                f"• **Yaratilgan testlaringiz:** {limit_status}\n"
+                f"• **Talabalar sig'imi:** {settings.demo_max_students} nafargacha (har bir testda)\n\n"
                 f"🤝 **Bepul limit olish:**\n"
-                f"Quyidagi taklif havolasini 5 ta hamkasb ustozga yuboring. Ular botimizga kirib `/start` tugmasini bosishi bilanoq sizga **1 ta bepul test yaratish limiti** taqdim etiladi.\n"
+                f"Quyidagi taklif havolasini 5 ta hamkasb ustozga yuboring. Ular botga kirib `/start` tugmasini bosishi bilanoq hisobingizga **1 ta bepul test limiti (MONO)** qo'shiladi:\n"
                 f"🔗 Taklif havolangiz: `{ref_link}`\n"
-                f"📊 Taklif ko'rsatkichi: *{ref_count}/5*\n"
-                f"_Ko'proq test o'tkazish uchun Premium yoki Limit xarid qiling!_\n\n"
+                f"📊 Taklif ko'rsatkichi: *{ref_count}/5*"
             )
-
-        # Dynamic tariff pricing info
-        status_text += (
-            f"📌 **Tariflar Narxlari (Xarid qilish uchun Adminga murojaat qiling):**\n"
-            f"- 🎫 1 martalik test limiti: *{settings.onetime_price:,} so'm* (Maks. {settings.onetime_max_students} talaba)\n"
-            f"- 🌟 1 oylik Premium obuna: *{settings.monthly_price:,} so'm* (Maks. {settings.monthly_max_students} talaba, cheksiz testlar)\n"
-        )
 
     await message.answer(status_text, reply_markup=get_teacher_menu(is_demo=False), parse_mode="Markdown")
 
