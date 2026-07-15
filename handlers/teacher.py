@@ -606,8 +606,7 @@ async def process_quiz_description(message: Message, state: FSMContext):
     # Word yuklash holatiga o'tish (Imtihon davomiyligi uni boshlashdan oldin so'raladi)
     await state.set_state(TeacherStates.waiting_for_docx_file)
     await message.answer(
-        "📝 **1-variant uchun Word (.docx) test savollarini yuklang:**\n\n"
-        "_Fayl sarlavha ostidagi jadval 6 ta ustundan iborat ekanligiga ishonch hosil qiling._",
+        "📝 **Test savollarini Word (.docx) faylda yuboring. Shablonlarini \"Qo'llanma\" bo'limidan oling.**",
         reply_markup=get_cancel_kb(),
         parse_mode="Markdown",
     )
@@ -677,8 +676,7 @@ async def cb_docx_finished(callback: CallbackQuery, state: FSMContext):
     await state.set_state(TeacherStates.waiting_for_excel_file)
     await callback.message.delete()
     await callback.message.answer(
-        "📊 **Endi studentlar ism-familiyalari ro'yxatini (Excel - .xlsx) yuklang:**\n\n"
-        "_Faylning birinchi ustun sarlavhasi 'Ism Familiya' bo'lishi shart._",
+        "📊 **O'quvchilar ro'yxatini Excel (.xlsx) faylda yuboring. Shablonlarini \"Qo'llanma\" bo'limidan oling.**",
         reply_markup=get_cancel_kb(),
         parse_mode="Markdown",
     )
