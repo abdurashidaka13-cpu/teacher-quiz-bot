@@ -1497,7 +1497,10 @@ async def show_tariffs_guide(message: Message):
     )
     
     kb = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🤝 Taklif havolasini olish (Bepul limit)", callback_data="get_ref_link")]
+        [
+            InlineKeyboardButton(text="🤝 Bepul taklif havolasini olish", callback_data="get_ref_link"),
+            InlineKeyboardButton(text="✉️ Adminga murojaat", callback_data="contact_admin")
+        ]
     ])
     await message.answer(text, parse_mode="HTML", reply_markup=kb)
 
@@ -1514,11 +1517,11 @@ async def cb_get_ref_link(callback: CallbackQuery):
         ref_count = db_u.referral_count if db_u else 0
 
     text = (
-        f"🤝 **Taklif tizimi orqali bepul limit oling!**\n\n"
-        f"Quyidagi taklif havolasini hamkasb ustozlarga yuboring. Ular botga kirib `/start` bosishlari bilanoq sizning hisobingizga 1 ta taklif qo'shiladi:\n\n"
+        f"🤝 **Bepul (DEMO) limit oling!**\n\n"
+        f"Quyidagi taklif havolasini ustiga bosing va hamkasb ustozlarga yuboring.\n\n"
         f"🔗 Taklif havolangiz: `{ref_link}`\n\n"
         f"📊 Hozirgi ko'rsatkich: *{ref_count}/5* hamkasb taklif qilingan.\n"
-        f"🎁 5 taga yetganda **1 ta bepul test yaratish limiti** (onetime) olasiz!"
+        f"🎁 5 nafar hamkasb botga kirsa, 1 ta bepul test yaratish limitini olasiz!"
     )
     await callback.message.answer(text, parse_mode="Markdown")
     await callback.answer()
